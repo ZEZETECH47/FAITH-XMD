@@ -3,7 +3,7 @@ const moment = require('moment-timezone');
 const { performance } = require('perf_hooks');
 
 cmd({
-  pattern: "test",
+  pattern: "tast",
   alias: ["checko", "botcheck"],
   desc: "Comprehensive bot test with diagnostics",
   category: "system",

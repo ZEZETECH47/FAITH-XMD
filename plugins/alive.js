@@ -1,71 +1,59 @@
-const { cmd } = require('../command');
-const moment = require('moment-timezone');
+const { cmd, commands } = require('../command');
+const os = require("os");
 const { runtime } = require('../lib/functions');
 
 cmd({
-  pattern: "alive",
-  alias: ["status", "botstatus"],
-  desc: "Show bot status information",
-  category: "system",
-  react: "⚡",
-  filename: __filename
-}, async (Void, mek, m) => {
-  try {
-    const time = moment.tz('Africa/Nairobi').format('HH:mm:ss');
-    const date = moment.tz('Africa/Nairobi').format('DD/MM/YYYY');
-    const uptime = runtime(process.uptime());
+    pattern: "alive",
+    alias: ["av", "a", "runtime"],
+    desc: "Check uptime and system status",
+    category: "main",
+    react: "📟",
+    filename: __filename
+},
+async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sender, senderNumber, botNumber2, botNumber, pushname, isMe, isOwner, groupMetadata, groupName, participants, groupAdmins, isBotAdmins, isAdmins, reply }) => {
+    try {
+        // Get system info
+        const platform = "Heroku Platform"; // Fixed deployment platform
+        const release = os.release(); // OS version
+        const cpuModel = os.cpus()[0].model; // CPU info
+        const totalMem = (os.totalmem() / 1024 / 1024).toFixed(2); // Total RAM in MB
+        const usedMem = (process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2); // Used RAM in MB
 
-    // Simple and clean status message
-    const message = `
-⚡ *PK-XMD BOT STATUS* ⚡
+        // Stylish and detailed system status message
+        const status = `╭───❰ *𝐂𝐀𝐒𝐄𝐘𝐑𝐇𝐎𝐃𝐄𝐒 𝐗𝐌𝐃* ❱──┈⊷
+┃ *✨𝖴ᴘᴛɪᴍᴇ* : *${runtime(process.uptime())}*
+┃ *💾 𝖱ᴀᴍ ᴜsᴀɢᴇ* : *${usedMem}MB / ${totalMem}MB*
+┃ *🧑‍💻𝖣ᴇᴘʟᴏʏᴇᴅ ᴏɴ* : *${platform}*
+┃ *👨‍💻𝖮ᴡɴᴇʀ* : *𝖬ʀ ᴄᴀsᴇʏʀʜᴏᴅᴇs*
+┃ *🧬𝖵ᴇʀsɪᴏɴ* : *𝟣.𝟢.𝟢 𝖡𝖤𝖳𝖠*
+╰──────────────────────┈⊷
+> ᴘᴏᴡᴇʀᴇᴅ ʙʏ ᴄᴀsᴇʏʀʜᴏᴅᴇs ᴛᴇᴄʜ`;
 
-🌍 Server Time: ${time}
-📅 Date: ${date}
-⏱️ Uptime: ${uptime}
+        // Send image + caption + audio combined
+        await conn.sendMessage(from, { 
+            image: { url: `https://i.ibb.co/wN6Gw0ZF/lordcasey.jpg` },  
+            caption: status,
+            contextInfo: {
+                mentionedJid: [m.sender],
+                forwardingScore: 999,
+                isForwarded: true,
+                forwardedNewsletterMessageInfo: {
+                    newsletterJid: '120363302677217436@newsletter',
+                    newsletterName: '𝐂𝐀𝐒𝐄𝐘𝐑𝐇𝐎𝐃𝐄𝐒 𝐀𝐋𝐈𝐕𝐄🍀',
+                    serverMessageId: 143
+                }
+            }
+        }, { quoted: mek });
 
-🔧 Powered by Pkdriller
-`.trim();
+        // Attach audio within the same "quoted" message for grouping
+        await conn.sendMessage(from, { 
+            audio: { url: 'https://files.catbox.moe/dcxfi1.mp3' },
+            mimetype: 'audio/mp4',
+            ptt: true 
+        }, { quoted: mek });
 
-    // Newsletter context info
-    const contextInfo = {
-      externalAdReply: {
-        title: "PK-XMD • BOT STATUS",
-        body: `Online since ${uptime}`,
-        thumbnailUrl: 'https://files.catbox.moe/fgiecg.jpg',
-        sourceUrl: 'https://github.com/mejjar00254/PK-XMD',
-        mediaType: 1,
-        renderLargerThumbnail: true
-      },
-      forwardingScore: 999,
-      isForwarded: true,
-      forwardedNewsletterMessageInfo: {
-        newsletterJid: "120363288304618280@newsletter",
-        newsletterName: "zeze",
-        serverMessageId: 789
-      }
-    };
-
-    await Void.sendMessage(
-      m.chat, 
-      {
-        text: message,
-        contextInfo: contextInfo
-      },
-      { 
-        quoted: mek 
-      }
-    );
-
-  } catch (error) {
-    console.error('Alive command error:', error);
-    await Void.sendMessage(
-      m.chat, 
-      { 
-        text: '⚠️ Error showing status. Bot is still running!' 
-      },
-      { 
-        quoted: mek 
-      }
-    );
-  }
+    } catch (e) {
+        console.error("Error in alive command:", e);
+        reply(`🚨 *An error occurred:* ${e.message}`);
+    }
 });

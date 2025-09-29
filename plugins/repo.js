@@ -36,7 +36,7 @@ async (conn, mek, m, { from, reply }) => {
 ├─ *🌍 Channel:*
 │   https://whatsapp.com/channel/0029VaeRrcnADTOKzivM0S1r
 │.  https://whatsapp.com/channel/0029VbANIT5D8SDpK7oExi1v
-╰─ *🚀 Powered by ZEZETECH*
+╰─ *🚀 Powered by Mr REY-AI*
 `.trim();
 
         await conn.sendMessage(from, {
@@ -47,8 +47,8 @@ async (conn, mek, m, { from, reply }) => {
                 forwardingScore: 999,
                 isForwarded: true,
                 forwardedNewsletterMessageInfo: {
-                    newsletterJid: '120363288304618280@newsletter',
-                    newsletterName: 'PK-XMD UPDATES',
+                    newsletterJid: '120363295141350550@newsletter',
+                    newsletterName: 'FAITH-MD UPDATE',
                     serverMessageId: 110
                 }
             }
